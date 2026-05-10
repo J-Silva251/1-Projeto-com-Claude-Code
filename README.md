@@ -1,1 +1,1 @@
-﻿# 1 Projeto com Claude Code
+﻿# 1 Projeto
