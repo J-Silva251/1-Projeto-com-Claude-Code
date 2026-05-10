@@ -130,3 +130,291 @@ IntlError: MISSING_MESSAGE: Could not resolve `tabs.tabs.all` in messages for lo
  GET /pt?_rsc=42x04 200 in 68ms
  ✓ Compiled in 276ms (1507 modules)
  GET /pt?_rsc=42x04 200 in 43ms
+ ✓ Compiled /_not-found in 346ms (1496 modules)
+ GET /pt 404 in 453ms
+ GET /pt 200 in 124ms
+ ⨯ Failed to generate static paths for /[locale]:
+Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1188ms (1722 modules)
+ GET /pt 500 in 1953ms
+ ⨯ Error: Cannot find module './vendor-chunks/@formatjs.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 560ms (1754 modules)
+ GET /favicon.ico 200 in 626ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/news/[platform]/route' in F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\news\[platform]\route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/news/[platform]/route' in 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/api/news/[platform]/route (expected F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\news\[platform]\route.js)
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/article/[id]/route' in F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\article\[id]\route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/article/[id]/route' in 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/api/article/[id]/route (expected F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\article\[id]\route.js)
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/news/[platform]/route' in F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\news\[platform]\route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/news/[platform]/route' in 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/api/news/[platform]/route (expected F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\news\[platform]\route.js)
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\handle-externals.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/article/[id]/route' in F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\article\[id]\route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/article/[id]/route' in 'F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/api/article/[id]/route (expected F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\api\article\[id]\route.js)
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\handle-externals.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⨯ Error: Cannot find module './vendor-chunks/@formatjs.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ GET /pt 500 in 382ms
+ ⨯ Error: Cannot find module './vendor-chunks/@formatjs.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ GET /pt 500 in 341ms
+ GET /favicon.ico 200 in 10ms
+ ⨯ Error: Cannot find module './vendor-chunks/@formatjs.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ GET /pt 500 in 354ms
+ ⨯ Error: Cannot find module './vendor-chunks/@formatjs.js'
+Require stack:
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\webpack-runtime.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\.next\server\app\[locale]\page.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\load-components.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\build\utils.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\dev\static-paths-worker.js
+- F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at mod.require (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:147:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\webpack-runtime.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\.next\\server\\app\\[locale]\\page.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\require.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\load-components.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\build\\utils.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'F:\\PROJESTOS PROGRAMACAO\\1 Projeto com Claude Code\\gaming-news\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/pt'
+}
+ GET /pt 500 in 344ms

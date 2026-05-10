@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface NavbarProps {
@@ -24,10 +24,8 @@ export default function Navbar({ onSubscribeClick }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   function switchLocale(newLocale: string) {
-    // Substitui o prefixo de locale na URL atual
-    const segments = pathname.split("/");
-    segments[1] = newLocale;
-    router.push(segments.join("/") || "/");
+    // next-intl router.replace com locale salva cookie NEXT_LOCALE automaticamente
+    router.replace(pathname, { locale: newLocale });
     setLangOpen(false);
   }
 

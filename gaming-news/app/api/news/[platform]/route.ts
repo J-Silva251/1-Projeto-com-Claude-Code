@@ -4,8 +4,8 @@ import type { Platform } from "@/types";
 
 const VALID: Platform[] = ["pc", "xbox", "nintendo", "playstation", "mobile"];
 
-// Cache de 30 minutos — reduz carga nos feeds RSS e na tradução
-export const revalidate = 1800;
+// Sem cache estático — locale varia por request e precisa de resposta correta por idioma
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }: { params: { platform: string } }) {
   const { platform } = params;

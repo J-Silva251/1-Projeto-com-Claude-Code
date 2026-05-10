@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decodeArticleId, fetchArticleDetail, fetchPlatformNews } from "@/lib/newsParser";
 
-// Cache de 30 minutos — artigos raramente mudam
-export const revalidate = 1800;
+// Sem cache estático — locale varia por request
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const locale = req.nextUrl.searchParams.get("locale") ?? "pt";
