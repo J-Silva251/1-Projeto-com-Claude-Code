@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "logo": "GAMENEWS",
+    "platforms": "Plataformas",
+    "subscribe": "Registrarse",
+    "login": "Entrar"
+  },
+  "ticker": {
+    "label": "ÚLTIMAS NOTICIAS"
+  },
+  "tabs": {
+    "all": "Todas",
+    "pc": "PC",
+    "xbox": "Xbox",
+    "nintendo": "Nintendo",
+    "playstation": "PlayStation"
+  },
+  "hero": {
+    "readMore": "Leer más",
+    "featured": "DESTACADO"
+  },
+  "card": {
+    "readMore": "Leer más →",
+    "source": "Fuente"
+  },
+  "subscribe": {
+    "title": "Regístrate y recibe las últimas noticias",
+    "subtitle": "Mantente al día con todo lo que pasa en el mundo de los videojuegos",
+    "name": "Tu nombre",
+    "email": "Tu correo electrónico",
+    "platforms": "Plataformas de interés",
+    "button": "Registrarse",
+    "success": "¡Registro exitoso!",
+    "successMessage": "Recibirás las últimas noticias en tu correo.",
+    "close": "Cerrar",
+    "namePlaceholder": "Ingresa tu nombre",
+    "emailPlaceholder": "Ingresa tu correo"
+  },
+  "loading": "Cargando noticias...",
+  "error": "Error al cargar noticias. Inténtalo de nuevo.",
+  "noNews": "No hay noticias disponibles en este momento.",
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "disclaimer": "Sitio de portafolio. Contenido agregado de fuentes públicas."
+  }
+}

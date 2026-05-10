@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "logo": "GAMENEWS",
+    "platforms": "Platforms",
+    "subscribe": "Sign Up",
+    "login": "Log In"
+  },
+  "ticker": {
+    "label": "BREAKING NEWS"
+  },
+  "tabs": {
+    "all": "All",
+    "pc": "PC",
+    "xbox": "Xbox",
+    "nintendo": "Nintendo",
+    "playstation": "PlayStation"
+  },
+  "hero": {
+    "readMore": "Read more",
+    "featured": "FEATURED"
+  },
+  "card": {
+    "readMore": "Read more →",
+    "source": "Source"
+  },
+  "subscribe": {
+    "title": "Sign up and get the latest news",
+    "subtitle": "Stay up to date with everything happening in the gaming world",
+    "name": "Your name",
+    "email": "Your email",
+    "platforms": "Platforms of interest",
+    "button": "Sign Up",
+    "success": "Registration successful!",
+    "successMessage": "You will receive the latest news in your email.",
+    "close": "Close",
+    "namePlaceholder": "Enter your name",
+    "emailPlaceholder": "Enter your email"
+  },
+  "loading": "Loading news...",
+  "error": "Error loading news. Please try again.",
+  "noNews": "No news available at the moment.",
+  "footer": {
+    "rights": "All rights reserved",
+    "disclaimer": "Portfolio website. Content aggregated from public sources."
+  }
+}
