@@ -39,7 +39,7 @@ const FEEDS: Record<Platform, { url: string; source: string }[]> = {
   ],
 };
 
-// Seletores de conteúdo principal por domínio (do mais específico ao mais genérico)
+// Seletores do corpo principal por domínio
 const SITE_SELECTORS: Record<string, string[]> = {
   "pocketgamer.com":     [".article-body", ".article__body", ".article-content", ".post-content"],
   "pocketgamer.biz":     [".article-body", ".article__body", ".post-content"],
@@ -53,32 +53,33 @@ const SITE_SELECTORS: Record<string, string[]> = {
   "blog.playstation.com":[".entry-content", ".article__body"],
 };
 
-// Seletores genéricos usados como fallback
 const GENERIC_SELECTORS = [
   "[itemprop='articleBody']",
-  "article .body",
-  "article .content",
-  ".article-body",
-  ".post-body",
-  ".entry-content",
-  ".post-content",
-  "article",
-  "main",
+  "article .body", "article .content",
+  ".article-body", ".post-body", ".entry-content", ".post-content",
+  "article", "main",
 ];
 
-// Elementos a remover antes de extrair o conteúdo
-const JUNK_SELECTORS = [
+// Remove antes de extrair (global — ads, nav, scripts)
+const GLOBAL_JUNK = [
   "script", "style", "noscript",
   "nav", "header", "footer",
-  ".ad", ".ads", ".advertisement", ".advert",
-  ".sidebar", ".widget",
-  ".related", ".related-articles",
-  ".newsletter", ".subscribe",
-  ".social-share", ".share-buttons",
-  ".cookie-notice", ".cookie-banner",
+  ".ad", ".ads", ".advertisement", ".advert", "[class*='banner-ad']",
+  ".newsletter", ".subscribe", "[class*='newsletter']", "[class*='subscribe']",
+  ".social-share", ".share-buttons", "[class*='social-share']",
   "[class*='cookie']", "[class*='popup']", "[class*='modal']",
-  "[id*='cookie']", "[id*='popup']", "[id*='banner']",
   "iframe[src*='doubleclick']", "iframe[src*='googlesyndication']",
+  "iframe[src*='adnxs']",
+];
+
+// Remove DENTRO do conteúdo extraído (artigos relacionados, asides de promo)
+const INNER_JUNK = [
+  "[class*='related-article']", "[class*='related-post']", "[class*='related-content']",
+  "[class*='related-news']", "[class*='recommended']", "[class*='you-might']",
+  "[class*='you-may']", "[class*='also-read']", "[class*='read-also']",
+  "[class*='further-reading']", "[class*='more-from']", "[class*='more-news']",
+  "[class*='see-also']", "[class*='trending']",
+  ".related", ".recommended",
 ];
 
 interface RssItem {
@@ -105,9 +106,19 @@ function sanitizeHtml(html: string): string {
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
     .replace(/\son\w+="[^"]*"/gi, "")
     .replace(/\son\w+='[^']*'/gi, "")
+    // Imagens com lazy-load: converte data-src/data-lazy-src → src
+    .replace(/<img([^>]*?)\s+data-(?:lazy-)?src=["']([^"']+)["']([^>]*?)(\s*\/?>)/gi,
+      (_, before, lazySrc, after, close) => `<img${before} src="${lazySrc}"${after} loading="lazy"${close}`)
     .replace(/<img([^>]*?)(\s*\/?>)/gi, '<img$1 loading="lazy"$2')
-    .replace(/<iframe([^>]*?)>/gi, '<div class="video-wrap"><iframe$1 loading="lazy">')
-    .replace(/<\/iframe>/gi, "</iframe></div>");
+    // Iframes com data-src (YouTube lazy) → src real
+    .replace(/<iframe([^>]*?)\s+data-src=["']([^"']+)["']([^>]*?)>/gi,
+      (_, before, dataSrc, after) => `<div class="video-wrap"><iframe${before} src="${dataSrc}"${after} loading="lazy">`)
+    // Iframes normais com src
+    .replace(/<iframe([^>]*?src=["'][^"']+["'][^>]*?)>/gi,
+      '<div class="video-wrap"><iframe$1 loading="lazy">')
+    .replace(/<\/iframe>/gi, "</iframe></div>")
+    // Vídeos nativos
+    .replace(/<video([^>]*?)>/gi, '<video$1 controls style="max-width:100%;border-radius:10px;margin:1.5rem 0">');
 }
 
 function htmlToText(html: string): string {
@@ -119,7 +130,15 @@ function htmlToText(html: string): string {
     .trim();
 }
 
-// Busca o conteúdo completo da página original via scraping
+/** Converte qualquer URL relativa ou protocol-relative em absoluta */
+function toAbsolute(href: string, base: string): string {
+  if (!href) return href;
+  if (href.startsWith("http://") || href.startsWith("https://")) return href;
+  if (href.startsWith("//")) return "https:" + href;
+  try { return new URL(href, base).href; } catch { return href; }
+}
+
+/** Busca o conteúdo completo da página original, incluindo vídeos */
 async function scrapeFullContent(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, {
@@ -129,7 +148,6 @@ async function scrapeFullContent(url: string): Promise<string | null> {
           "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
-        "Cache-Control": "no-cache",
       },
       signal: AbortSignal.timeout(20000),
     });
@@ -138,49 +156,92 @@ async function scrapeFullContent(url: string): Promise<string | null> {
     const html = await res.text();
     const $ = cheerio.load(html);
 
-    // Remove lixo
-    JUNK_SELECTORS.forEach((sel) => {
-      try { $(sel).remove(); } catch { /* ignora seletor inválido */ }
+    // 1. Converte lazy-load de iframes ANTES de remover junk
+    //    (YouTube embedded com data-src → src real)
+    $("iframe[data-src]").each((_, el) => {
+      const lazy = $(el).attr("data-src") ?? "";
+      if (lazy) { $(el).attr("src", lazy); $(el).removeAttr("data-src"); }
     });
 
-    // Determina seletores prioritários pelo domínio
+    // 2. Converte lazy-load de imagens
+    $("img").each((_, el) => {
+      const lazy =
+        $(el).attr("data-src") ??
+        $(el).attr("data-lazy-src") ??
+        $(el).attr("data-original") ??
+        $(el).attr("data-lazy") ?? "";
+      if (lazy && !$(el).attr("src")) $(el).attr("src", lazy);
+    });
+
+    // 3. Remove lixo global
+    GLOBAL_JUNK.forEach((sel) => {
+      try { $(sel).remove(); } catch { /* seletor inválido */ }
+    });
+
+    // 4. Determina seletores prioritários pelo domínio
     const domain = new URL(url).hostname.replace("www.", "");
     const prioritySelectors =
       SITE_SELECTORS[domain] ??
       Object.entries(SITE_SELECTORS).find(([k]) => domain.includes(k))?.[1] ??
       [];
-
     const allSelectors = [...prioritySelectors, ...GENERIC_SELECTORS];
 
+    // 5. Encontra elemento de conteúdo
+    let contentEl: ReturnType<typeof $> | null = null;
     for (const sel of allSelectors) {
       const el = $(sel).first();
-      const text = el.text().trim();
-      if (el.length && text.length > 300) {
-        // Converte links relativos em absolutos
-        const base = new URL(url).origin;
-        el.find("img[src]").each((_, img) => {
-          const src = $(img).attr("src") ?? "";
-          if (src.startsWith("/")) $(img).attr("src", base + src);
-        });
-        el.find("a[href]").each((_, a) => {
-          const href = $(a).attr("href") ?? "";
-          if (href.startsWith("/")) $(a).attr("href", base + href);
-        });
-        return el.html() ?? null;
+      if (el.length && el.text().trim().length > 300) {
+        contentEl = el;
+        break;
       }
     }
+    if (!contentEl) return null;
 
-    return null;
+    // 6. Remove artigos relacionados e promos de dentro do conteúdo
+    INNER_JUNK.forEach((sel) => {
+      try { contentEl!.find(sel).remove(); } catch { /* seletor inválido */ }
+    });
+
+    // 7. Converte todas as URLs relativas → absolutas (imgs, links, iframes)
+    contentEl.find("img[src]").each((_, el) => {
+      const src = $(el).attr("src") ?? "";
+      const abs = toAbsolute(src, url);
+      if (abs !== src) $(el).attr("src", abs);
+    });
+    contentEl.find("a[href]").each((_, el) => {
+      const href = $(el).attr("href") ?? "";
+      if (href.startsWith("#") || href.startsWith("mailto:")) return;
+      const abs = toAbsolute(href, url);
+      if (abs !== href) {
+        $(el).attr("href", abs);
+        // Links externos abrem em nova aba
+        $(el).attr("target", "_blank").attr("rel", "noopener noreferrer");
+      }
+    });
+    contentEl.find("iframe[src]").each((_, el) => {
+      const src = $(el).attr("src") ?? "";
+      const abs = toAbsolute(src, url);
+      if (abs !== src) $(el).attr("src", abs);
+    });
+    contentEl.find("source[src]").each((_, el) => {
+      const src = $(el).attr("src") ?? "";
+      $(el).attr("src", toAbsolute(src, url));
+    });
+
+    return contentEl.html() ?? null;
   } catch {
     return null;
   }
 }
 
-// Traduz o texto do artigo preservando imagens e vídeos no lugar certo
+/** Traduz o texto preservando mídias (imgs, vídeos, iframes) no lugar certo */
 async function buildTranslatedHtml(rawHtml: string, locale: string): Promise<string> {
   if (locale === "en") return rawHtml;
 
-  const mediaPattern = /(<img[^>]+>|<div class="video-wrap">[\s\S]*?<\/div>)/gi;
+  // Captura: img isolado, video completo, div.video-wrap completo
+  const mediaPattern =
+    /(<img[^>]+>|<video[\s\S]*?<\/video>|<div class="video-wrap">[\s\S]*?<\/div>)/gi;
+
   const segments: { type: "text" | "media"; content: string }[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -196,7 +257,6 @@ async function buildTranslatedHtml(rawHtml: string, locale: string): Promise<str
     segments.push({ type: "text", content: rawHtml.slice(lastIndex) });
   }
 
-  // Traduz blocos de texto preservando estrutura HTML básica
   const translated = await Promise.all(
     segments.map(async (seg) => {
       if (seg.type === "media") return seg.content;
@@ -285,15 +345,11 @@ export async function fetchArticleDetail(
       const title      = item.title ?? "Sem título";
       const rssEncoded = (item as { contentEncoded?: string }).contentEncoded ?? item.content ?? "";
 
-      // Tenta scraping da página completa para conteúdo integral
+      // Conteúdo completo: scraping da página > RSS contentEncoded > snippet
       const scrapedHtml = await scrapeFullContent(originalUrl);
-
-      // Usa conteúdo scraped > RSS encoded > snippet
-      const baseHtml = scrapedHtml
-        ? scrapedHtml
-        : rssEncoded
-        ? rssEncoded
-        : `<p>${item.contentSnippet ?? ""}</p>`;
+      const baseHtml =
+        scrapedHtml ||
+        (rssEncoded ? rssEncoded : `<p>${item.contentSnippet ?? ""}</p>`);
 
       const rawHtml = sanitizeHtml(baseHtml);
 

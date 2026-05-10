@@ -249,6 +249,20 @@ body {
   padding: 1rem;
   margin: 1.5rem 0;
 }
+/* Vídeo nativo (<video>) */
+.article-body video {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 1.5rem auto;
+  display: block;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+/* Links externos dentro do artigo — abrem em nova aba */
+.article-body a[target="_blank"]::after {
+  content: " ↗";
+  font-size: 0.7em;
+  opacity: 0.5;
+}
 /* Spinner de carregamento CSS */
 @keyframes spin { to { transform: rotate(360deg); } }
 .animate-spin { animation: spin 0.8s linear infinite; }
