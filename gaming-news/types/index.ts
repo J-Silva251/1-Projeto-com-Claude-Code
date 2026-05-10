@@ -1,15 +1,19 @@
-export type Platform = "pc" | "xbox" | "nintendo" | "playstation";
+export type Platform = "pc" | "xbox" | "nintendo" | "playstation" | "mobile";
 
 export interface NewsItem {
-  id: string;           // base64url de "platform:originalUrl" — usado na rota /news/[id]
+  id: string;
   title: string;
   description: string;
-  fullContent?: string; // Conteúdo completo do artigo (quando disponível no RSS)
   imageUrl: string;
   originalUrl: string;
   platform: Platform;
   source: string;
   publishedAt: string;
+}
+
+// Extensão usada apenas na página de artigo (não trafega no grid)
+export interface ArticleDetail extends NewsItem {
+  rawHtml: string;
 }
 
 export interface PlatformConfig {
@@ -27,4 +31,12 @@ export interface Subscriber {
   name: string;
   email: string;
   platforms: Platform[];
+}
+
+export interface Comment {
+  id: string;
+  articleId: string;
+  name: string;
+  text: string;
+  timestamp: string;
 }

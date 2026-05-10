@@ -13,7 +13,8 @@
     "pc": "PC",
     "xbox": "Xbox",
     "nintendo": "Nintendo",
-    "playstation": "PlayStation"
+    "playstation": "PlayStation",
+    "mobile": "Mobile"
   },
   "hero": {
     "readMore": "Leer más",

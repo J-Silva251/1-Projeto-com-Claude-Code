@@ -1,6 +1,5 @@
 import type { PlatformConfig } from "@/types";
 
-// Configuração central de cada plataforma — cores, glows e labels
 export const PLATFORMS: PlatformConfig[] = [
   {
     key: "pc",
@@ -41,6 +40,16 @@ export const PLATFORMS: PlatformConfig[] = [
     borderClass: "border-[#00439C]",
     glowClass: "border-glow-playstation",
     badgeBg: "bg-[#00439C]/20 text-[#5599FF]",
+  },
+  {
+    key: "mobile",
+    label: "Mobile",
+    color: "#A855F7",
+    darkColor: "#7c3aed",
+    glowColor: "rgba(168,85,247,0.4)",
+    borderClass: "border-[#A855F7]",
+    glowClass: "border-glow-mobile",
+    badgeBg: "bg-[#A855F7]/20 text-[#A855F7]",
   },
 ];
 

@@ -1,37 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decodeArticleId, fetchPlatformNews } from "@/lib/newsParser";
-import { translateText } from "@/lib/translator";
+import { decodeArticleId, fetchArticleDetail, fetchPlatformNews } from "@/lib/newsParser";
 
-// Cache de 10 minutos — artigos são re-buscados do feed se não estiverem em cache
-export const revalidate = 600;
+// Cache de 30 minutos — artigos raramente mudam
+export const revalidate = 1800;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const locale = req.nextUrl.searchParams.get("locale") ?? "pt";
   const decoded = decodeArticleId(params.id);
-
-  if (!decoded) {
-    return NextResponse.json({ error: "ID inválido" }, { status: 400 });
-  }
+  if (!decoded) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   const { platform, originalUrl } = decoded;
 
-  // Re-busca o feed da plataforma para localizar o artigo pelo URL
-  const news = await fetchPlatformNews(platform, locale);
-  const article = news.find((n) => n.originalUrl === originalUrl);
+  // Busca o artigo completo (com HTML) e notícias relacionadas em paralelo
+  const [article, related] = await Promise.all([
+    fetchArticleDetail(platform, originalUrl, locale),
+    fetchPlatformNews(platform, locale),
+  ]);
 
-  if (!article) {
-    return NextResponse.json({ error: "Artigo não encontrado" }, { status: 404 });
-  }
+  if (!article) return NextResponse.json({ error: "Artigo não encontrado" }, { status: 404 });
 
-  // Traduz o conteúdo completo se disponível (limitado a 5000 chars para performance)
-  let translatedFull = article.fullContent ?? "";
-  if (translatedFull && locale !== "en") {
-    const chunk = translatedFull.slice(0, 5000);
-    translatedFull = await translateText(chunk, locale);
-  }
+  // Exclui o próprio artigo da lista de relacionados
+  const relatedNews = related.filter((n) => n.id !== article.id).slice(0, 6);
 
-  return NextResponse.json({ article: { ...article, fullContent: translatedFull } });
+  return NextResponse.json({ article, related: relatedNews });
 }

@@ -146,3 +146,56 @@ body {
   padding: 2px 8px;
   border-radius: 3px;
 }
+
+/* ── Corpo do artigo: tipografia rica com suporte a imagens e vídeos embutidos ── */
+.article-body {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+}
+.article-body p  { margin-bottom: 1.2rem; }
+.article-body h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; }
+.article-body h3 { font-size: 1.05rem; font-weight: 700; color: rgba(255,255,255,0.9); margin: 1.5rem 0 0.5rem; }
+.article-body a  { color: #00D4FF; text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: #fff; }
+.article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.2rem; }
+.article-body li { margin-bottom: 0.4rem; }
+.article-body blockquote {
+  border-left: 3px solid rgba(0,212,255,0.5);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+}
+/* Imagens dentro do artigo */
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 1.5rem auto;
+  display: block;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+/* Wrapper de vídeo responsivo (YouTube iframes) */
+.article-body .video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.article-body .video-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+/* Spinner de carregamento CSS */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 0.8s linear infinite; }
+/* Glow mobile */
+.border-glow-mobile { box-shadow: 0 0 15px rgba(168,85,247,0.3), inset 0 0 15px rgba(168,85,247,0.05); }
+.glow-mobile { text-shadow: 0 0 20px #A855F7, 0 0 40px rgba(168,85,247,0.3); }
