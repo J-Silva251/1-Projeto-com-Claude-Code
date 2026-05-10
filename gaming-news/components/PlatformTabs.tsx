@@ -13,8 +13,9 @@ interface PlatformTabsProps {
 export default function PlatformTabs({ active, onChange }: PlatformTabsProps) {
   const t = useTranslations("tabs");
 
+  // useTranslations("tabs") já está escopado em "tabs", então usa t("all") e não t("tabs.all")
   const tabs = [
-    { key: "all" as const, label: t("tabs.all"), color: "#00D4FF" },
+    { key: "all" as const, label: t("all"), color: "#00D4FF" },
     ...PLATFORMS.map((p) => ({ key: p.key as Platform, label: p.label, color: p.color })),
   ];
 

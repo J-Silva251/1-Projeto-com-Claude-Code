@@ -10,3 +10,123 @@
  ✓ Ready in 2.6s
 <w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next-intl\dist\esm\production\extractor\format\index.js for build dependencies failed at 'import(t)'.
 <w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+ ✓ Compiled /middleware in 499ms (91 modules)
+ ○ Compiling /[locale] ...
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next-intl\dist\esm\production\extractor\format\index.js for build dependencies failed at 'import(t)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+ ✓ Compiled /[locale] in 4.8s (1513 modules)
+ ✓ Compiled in 271ms (712 modules)
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next-intl\dist\esm\production\extractor\format\index.js for build dependencies failed at 'import(t)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+IntlError: MISSING_MESSAGE: Could not resolve `tabs.tabs.all` in messages for locale `pt`.
+    at getFallbackFromErrorAndNotify (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:108:19)
+    at translateBaseFn (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:141:18)
+    at translateFn (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:173:20)
+    at PlatformTabs (webpack-internal:///(ssr)/./components/PlatformTabs.tsx:19:20)
+    at au (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:10446)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:15122
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at ab (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:11808)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+    ... collapsed 7 duplicate lines matching above lines ...
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42922)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at ab (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:11808)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    ... collapsed 4 duplicate lines matching above lines ...
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:46505)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874) {
+  code: 'MISSING_MESSAGE',
+  originalMessage: 'Could not resolve `tabs.tabs.all` in messages for locale `pt`.'
+}
+ GET /pt 200 in 5562ms
+ ○ Compiling /api/news/[platform] ...
+ ✓ Compiled /api/news/[platform] in 2.8s (891 modules)
+ GET /api/news/all?locale=pt 200 in 5944ms
+ GET /api/news/pc?locale=pt 200 in 6678ms
+ GET /api/news/mobile?locale=pt 200 in 2257ms
+IntlError: MISSING_MESSAGE: Could not resolve `tabs.tabs.all` in messages for locale `pt`.
+    at getFallbackFromErrorAndNotify (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:108:19)
+    at translateBaseFn (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:141:18)
+    at translateFn (webpack-internal:///(ssr)/./node_modules/use-intl/dist/esm/development/initializeConfig-CUsOI8u2.js:173:20)
+    at PlatformTabs (webpack-internal:///(ssr)/./components/PlatformTabs.tsx:19:20)
+    at au (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:10446)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:15122
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at ab (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:11808)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+    ... collapsed 7 duplicate lines matching above lines ...
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42922)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at ab (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:11808)
+    at F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+    ... collapsed 4 duplicate lines matching above lines ...
+    at aw (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:46505)
+    at a_ (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+    at aj (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+    at aC (F:\PROJESTOS PROGRAMACAO\1 Projeto com Claude Code\gaming-news\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874) {
+  code: 'MISSING_MESSAGE',
+  originalMessage: 'Could not resolve `tabs.tabs.all` in messages for locale `pt`.'
+}
+ GET /pt 200 in 171ms
+ ✓ Compiled /favicon.ico in 256ms (920 modules)
+ GET /favicon.ico 200 in 492ms
+ GET /api/news/pc?locale=pt 200 in 2863ms
+ GET /api/news/all?locale=pt 200 in 3561ms
+ GET /api/news/mobile?locale=pt 200 in 2379ms
+ GET /api/news/nintendo?locale=pt 200 in 2324ms
+ ✓ Compiled /[locale]/news/[id] in 396ms (1630 modules)
+ ✓ Compiled /api/article/[id] in 130ms (929 modules)
+ GET /api/article/bmludGVuZG86aHR0cHM6Ly93d3cubmludGVuZG9saWZlLmNvbS9mZWF0dXJlcy9wb2xsLWJveC1hcnQtYnJhd2wtYnVic3ktaW4tY2xhd3MtZW5jb3VudGVycy1vZi10aGUtZnVycmVkLWtpbmQtc25lcw?locale=pt 200 in 2901ms
+ GET /api/news/pc?locale=pt 200 in 2490ms
+ GET /api/news/all?locale=pt 200 in 2557ms
+ ✓ Compiled in 465ms (1507 modules)
+ GET /pt?_rsc=42x04 200 in 68ms
+ ✓ Compiled in 276ms (1507 modules)
+ GET /pt?_rsc=42x04 200 in 43ms

@@ -14,96 +14,129 @@ import ArticleSidebar from "@/components/ArticleSidebar";
 function formatDate(iso: string, locale: string): string {
   return new Date(iso).toLocaleDateString(
     locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US",
-    { day: "2-digit", month: "long", year: "numeric" }
+    { day: "numeric", month: "long", year: "numeric" }
   );
 }
 
 export default function ArticlePage() {
-  const { id } = useParams<{ id: string }>();
-  const locale = useLocale();
-  const router = useRouter();
+  const { id }   = useParams<{ id: string }>();
+  const locale   = useLocale();
+  const router   = useRouter();
 
-  const [article, setArticle] = useState<ArticleDetail | null>(null);
-  const [related, setRelated] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [article, setArticle]  = useState<ArticleDetail | null>(null);
+  const [related, setRelated]  = useState<NewsItem[]>([]);
+  const [loading, setLoading]  = useState(true);
+  const [error,   setError]    = useState(false);
 
   useEffect(() => {
     setLoading(true);
     setError(false);
+    setArticle(null);
     fetch(`/api/article/${id}?locale=${locale}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => { setArticle(d.article); setRelated(d.related ?? []); })
-      .catch(() => setError(true))
+      .then((d)  => { setArticle(d.article); setRelated(d.related ?? []); })
+      .catch(()  => setError(true))
       .finally(() => setLoading(false));
   }, [id, locale]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#00D4FF] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-white/40 font-mono text-xs">Carregando artigo...</p>
-        </div>
+  /* ── Estado de carregamento ── */
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center pt-20">
+      <div className="text-center space-y-4">
+        <div className="w-10 h-10 border-2 border-[#00D4FF] border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-white/40 font-mono text-xs tracking-widest">
+          {locale === "pt" ? "Traduzindo artigo..." : locale === "es" ? "Traduciendo artículo..." : "Loading article..."}
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (error || !article) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20">
-        <p className="text-red-400/70 font-mono text-sm">Artigo não encontrado.</p>
-        <button onClick={() => router.back()} className="text-[#00D4FF] font-mono text-sm hover:underline">← Voltar</button>
-      </div>
-    );
-  }
+  /* ── Estado de erro ── */
+  if (error || !article) return (
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20">
+      <p className="text-red-400/60 font-mono text-sm">
+        {locale === "pt" ? "Artigo não encontrado." : "Article not found."}
+      </p>
+      <button onClick={() => router.back()} className="text-[#00D4FF] font-mono text-sm hover:underline">
+        ← {locale === "pt" ? "Voltar" : "Back"}
+      </button>
+    </div>
+  );
 
-  const platform = getPlatformConfig(article.platform);
+  const platform   = getPlatformConfig(article.platform);
   const articleUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <div className="min-h-screen pt-20 pb-12">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-screen pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-4 lg:px-6">
 
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs font-mono text-white/30 mb-6">
-          <Link href={`/${locale}`} className="hover:text-white transition-colors">Home</Link>
+        {/* ── Breadcrumb ── */}
+        <nav className="flex items-center gap-2 text-xs font-mono text-white/30 mb-6 flex-wrap">
+          <Link href={`/${locale}`} className="hover:text-white/70 transition-colors">
+            {locale === "pt" ? "Início" : locale === "es" ? "Inicio" : "Home"}
+          </Link>
           <span>/</span>
           <span style={{ color: platform.color }}>{platform.label}</span>
           <span>/</span>
-          <span className="text-white/50 truncate max-w-xs">{article.title.slice(0, 40)}...</span>
+          <span className="text-white/40 truncate max-w-xs">{article.title.slice(0, 50)}…</span>
         </nav>
 
-        {/* Layout: artigo (esquerda) + sidebar (direita) */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        {/* ── Layout de 2 colunas ── */}
+        <div className="flex flex-col lg:flex-row gap-10">
 
-          {/* ── COLUNA PRINCIPAL ── */}
+          {/* ════════════════ COLUNA PRINCIPAL ════════════════ */}
           <article className="flex-1 min-w-0">
 
-            {/* Badges */}
-            <div className="flex items-center gap-3 mb-4">
+            {/* Badge da plataforma */}
+            <div className="flex items-center gap-3 mb-3">
               <span
                 className="platform-badge"
-                style={{ backgroundColor: `${platform.color}20`, color: platform.color, border: `1px solid ${platform.color}60` }}
+                style={{ backgroundColor: `${platform.color}18`, color: platform.color, border: `1px solid ${platform.color}50` }}
               >
                 {platform.label}
               </span>
-              <span className="text-xs text-white/40 font-mono">{article.source}</span>
-              <span className="text-xs text-white/30 font-mono">{formatDate(article.publishedAt, locale)}</span>
             </div>
 
-            {/* Título */}
+            {/* Título principal */}
             <h1
-              className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-6"
-              style={{ textShadow: `0 0 30px ${platform.glowColor}` }}
+              className="text-2xl md:text-3xl lg:text-[2rem] font-extrabold text-white leading-tight mb-5"
+              style={{ textShadow: `0 0 25px ${platform.glowColor}` }}
             >
               {article.title}
             </h1>
 
+            {/* Meta: fonte + data */}
+            <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/10">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-none"
+                style={{ backgroundColor: `${platform.color}20`, color: platform.color }}
+              >
+                {article.source.slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white/70">{article.source}</p>
+                <p className="text-[10px] text-white/30 font-mono">{formatDate(article.publishedAt, locale)}</p>
+              </div>
+
+              {/* Link para original — discreto */}
+              <a
+                href={article.originalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-auto text-[10px] font-mono hover:underline flex-none"
+                style={{ color: platform.color }}
+              >
+                {locale === "pt" ? "Ver original ↗" : locale === "es" ? "Ver original ↗" : "View original ↗"}
+              </a>
+            </div>
+
+            {/* Botões de compartilhar — antes do corpo (como Nintendo Life) */}
+            <ShareButtons title={article.title} url={articleUrl} />
+
             {/* Imagem hero */}
             <div
-              className="relative w-full rounded-xl overflow-hidden mb-8"
-              style={{ aspectRatio: "16/9", boxShadow: `0 4px 40px ${platform.glowColor}` }}
+              className="relative w-full rounded-2xl overflow-hidden my-6"
+              style={{ aspectRatio: "16/9", boxShadow: `0 8px 48px ${platform.glowColor}` }}
             >
               <Image
                 src={article.imageUrl}
@@ -116,58 +149,51 @@ export default function ArticlePage() {
             </div>
 
             {/* Resumo em destaque */}
-            <p className="text-base md:text-lg text-white/75 leading-relaxed mb-8 pb-8 border-b border-white/10 font-medium">
+            <p className="text-[1.05rem] text-white/80 leading-relaxed mb-8 pb-8 border-b border-white/10 font-medium italic">
               {article.description}
             </p>
 
-            {/* Corpo do artigo — HTML completo com imagens e vídeos */}
-            {article.rawHtml ? (
-              <div
-                className="article-body"
-                dangerouslySetInnerHTML={{ __html: article.rawHtml }}
-              />
-            ) : (
-              <p className="text-sm text-white/40 italic font-mono">
-                Conteúdo completo disponível na fonte original.
-              </p>
-            )}
+            {/* Corpo do artigo com texto traduzido + imagens/vídeos preservados */}
+            <div
+              className="article-body"
+              dangerouslySetInnerHTML={{ __html: article.rawHtml }}
+            />
 
-            {/* Fonte original */}
-            <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span className="text-white/30">Fonte: {article.source}</span>
-              <a
-                href={article.originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-                style={{ color: platform.color }}
-              >
-                Ver original →
-              </a>
+            {/* Seção de compartilhar — também no final */}
+            <div className="mt-10 pt-6 border-t border-white/10">
+              <ShareButtons title={article.title} url={articleUrl} />
             </div>
-
-            {/* Compartilhar */}
-            <ShareButtons title={article.title} url={articleUrl} />
 
             {/* Comentários */}
             <Comments articleId={article.id} />
           </article>
 
-          {/* ── SIDEBAR ── */}
+          {/* ════════════════ SIDEBAR ════════════════ */}
           <aside className="lg:w-72 xl:w-80 flex-none">
-            <div className="lg:sticky lg:top-20 space-y-6">
+            <div className="lg:sticky lg:top-20 space-y-4">
+
               {/* Botão voltar */}
               <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm font-mono text-white/40 hover:text-white transition-colors"
+                className="flex items-center gap-2 text-sm font-mono text-white/40 hover:text-white transition-colors w-full"
               >
-                ← Voltar
+                ← {locale === "pt" ? "Voltar" : locale === "es" ? "Volver" : "Back"}
               </button>
 
-              {/* Notícias relacionadas */}
-              <div className="glass rounded-xl p-4 border border-white/8">
-                <ArticleSidebar related={related} />
-              </div>
+              {/* Related news */}
+              {related.length > 0 && (
+                <div className="glass rounded-2xl border border-white/8 overflow-hidden">
+                  <div
+                    className="px-4 py-3 text-xs font-mono font-bold uppercase tracking-widest"
+                    style={{ backgroundColor: `${platform.color}15`, color: platform.color }}
+                  >
+                    {locale === "pt" ? "Mais notícias" : locale === "es" ? "Más noticias" : "More news"}
+                  </div>
+                  <div className="p-3">
+                    <ArticleSidebar related={related} />
+                  </div>
+                </div>
+              )}
             </div>
           </aside>
 
