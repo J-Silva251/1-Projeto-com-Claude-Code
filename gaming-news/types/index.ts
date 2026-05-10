@@ -1,9 +1,10 @@
 export type Platform = "pc" | "xbox" | "nintendo" | "playstation";
 
 export interface NewsItem {
-  id: string;
+  id: string;           // base64url de "platform:originalUrl" — usado na rota /news/[id]
   title: string;
   description: string;
+  fullContent?: string; // Conteúdo completo do artigo (quando disponível no RSS)
   imageUrl: string;
   originalUrl: string;
   platform: Platform;

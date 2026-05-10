@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
 import type { NewsItem } from "@/types";
 import { getPlatformConfig } from "@/lib/platforms";
 
@@ -23,7 +24,9 @@ function timeAgo(iso: string): string {
 
 export default function NewsCard({ item, index = 0 }: NewsCardProps) {
   const t = useTranslations("card");
+  const locale = useLocale();
   const platform = getPlatformConfig(item.platform);
+  const href = `/${locale}/news/${item.id}`;
 
   return (
     <motion.article
@@ -31,8 +34,9 @@ export default function NewsCard({ item, index = 0 }: NewsCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
       whileHover={{ y: -4 }}
-      className="card-3d group relative glass rounded-lg overflow-hidden border-l-2 flex flex-col"
+      className="card-3d group relative glass rounded-lg overflow-hidden border-l-2 flex flex-col cursor-pointer"
       style={{ borderLeftColor: platform.color }}
+      onClick={() => window.location.href = href}
     >
       {/* Imagem de capa */}
       <div className="relative h-44 overflow-hidden bg-white/5">
@@ -75,15 +79,13 @@ export default function NewsCard({ item, index = 0 }: NewsCardProps) {
             <span>•</span>
             <span>{timeAgo(item.publishedAt)}</span>
           </div>
-          <a
-            href={item.originalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={href}
             className="text-xs font-mono transition-colors"
             style={{ color: platform.color }}
           >
             {t("readMore")}
-          </a>
+          </Link>
         </div>
       </div>
 

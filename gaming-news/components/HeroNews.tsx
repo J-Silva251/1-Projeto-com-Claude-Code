@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
 import type { NewsItem } from "@/types";
 import { getPlatformConfig } from "@/lib/platforms";
 
@@ -12,7 +13,9 @@ interface HeroNewsProps {
 
 export default function HeroNews({ item }: HeroNewsProps) {
   const t = useTranslations("hero");
+  const locale = useLocale();
   const platform = getPlatformConfig(item.platform);
+  const href = `/${locale}/news/${item.id}`;
 
   return (
     <motion.div
@@ -96,11 +99,9 @@ export default function HeroNews({ item }: HeroNewsProps) {
           transition={{ delay: 0.5 }}
           className="flex items-center gap-4"
         >
-          <a
-            href={item.originalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 rounded font-mono text-sm font-bold transition-all hover:scale-105"
+          <Link
+            href={href}
+            className="px-5 py-2 rounded font-mono text-sm font-bold transition-all hover:scale-105 inline-block"
             style={{
               backgroundColor: platform.color,
               color: "#000",
@@ -108,7 +109,7 @@ export default function HeroNews({ item }: HeroNewsProps) {
             }}
           >
             {t("readMore")} →
-          </a>
+          </Link>
           <span className="text-xs text-white/40 font-mono">{item.source}</span>
         </motion.div>
       </div>
