@@ -1,4 +1,5 @@
 import Parser from "rss-parser";
+import * as cheerio from "cheerio";
 import { paraphraseTitle, paraphraseDescription } from "./paraphraser";
 import { translateBatch, translateText } from "./translator";
 import type { NewsItem, ArticleDetail, Platform } from "@/types";
@@ -32,12 +33,53 @@ const FEEDS: Record<Platform, { url: string; source: string }[]> = {
     { url: "https://www.nintendolife.com/feeds/latest", source: "Nintendo Life" },
     { url: "https://mynintendonews.com/feed/", source: "My Nintendo News" },
   ],
-  // Feeds de jogos mobile — múltiplos para garantir disponibilidade
   mobile: [
     { url: "https://www.pocketgamer.com/rss/", source: "Pocket Gamer" },
     { url: "https://www.pocketgamer.biz/feed/", source: "Pocket Gamer Biz" },
   ],
 };
+
+// Seletores de conteúdo principal por domínio (do mais específico ao mais genérico)
+const SITE_SELECTORS: Record<string, string[]> = {
+  "pocketgamer.com":     [".article-body", ".article__body", ".article-content", ".post-content"],
+  "pocketgamer.biz":     [".article-body", ".article__body", ".post-content"],
+  "pcgamer.com":         ["#article-body", ".article-body", ".article__body"],
+  "rockpapershotgun.com":[".article-content", ".entry-content", "article .content"],
+  "purexbox.com":        [".article-body", ".article__body"],
+  "pushsquare.com":      [".article-body", ".article__body"],
+  "nintendolife.com":    [".article-body", ".article__body"],
+  "mynintendonews.com":  [".entry-content", ".post-content"],
+  "news.xbox.com":       [".c-article-body", ".article__body", ".content-body"],
+  "blog.playstation.com":[".entry-content", ".article__body"],
+};
+
+// Seletores genéricos usados como fallback
+const GENERIC_SELECTORS = [
+  "[itemprop='articleBody']",
+  "article .body",
+  "article .content",
+  ".article-body",
+  ".post-body",
+  ".entry-content",
+  ".post-content",
+  "article",
+  "main",
+];
+
+// Elementos a remover antes de extrair o conteúdo
+const JUNK_SELECTORS = [
+  "script", "style", "noscript",
+  "nav", "header", "footer",
+  ".ad", ".ads", ".advertisement", ".advert",
+  ".sidebar", ".widget",
+  ".related", ".related-articles",
+  ".newsletter", ".subscribe",
+  ".social-share", ".share-buttons",
+  ".cookie-notice", ".cookie-banner",
+  "[class*='cookie']", "[class*='popup']", "[class*='modal']",
+  "[id*='cookie']", "[id*='popup']", "[id*='banner']",
+  "iframe[src*='doubleclick']", "iframe[src*='googlesyndication']",
+];
 
 interface RssItem {
   mediaContent?: { $: { url: string } };
@@ -64,7 +106,7 @@ function sanitizeHtml(html: string): string {
     .replace(/\son\w+="[^"]*"/gi, "")
     .replace(/\son\w+='[^']*'/gi, "")
     .replace(/<img([^>]*?)(\s*\/?>)/gi, '<img$1 loading="lazy"$2')
-    .replace(/<iframe([^>]*?)>/gi, '<div class="video-wrap"><iframe$1>')
+    .replace(/<iframe([^>]*?)>/gi, '<div class="video-wrap"><iframe$1 loading="lazy">')
     .replace(/<\/iframe>/gi, "</iframe></div>");
 }
 
@@ -77,11 +119,67 @@ function htmlToText(html: string): string {
     .trim();
 }
 
+// Busca o conteúdo completo da página original via scraping
+async function scrapeFullContent(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "no-cache",
+      },
+      signal: AbortSignal.timeout(20000),
+    });
+
+    if (!res.ok) return null;
+    const html = await res.text();
+    const $ = cheerio.load(html);
+
+    // Remove lixo
+    JUNK_SELECTORS.forEach((sel) => {
+      try { $(sel).remove(); } catch { /* ignora seletor inválido */ }
+    });
+
+    // Determina seletores prioritários pelo domínio
+    const domain = new URL(url).hostname.replace("www.", "");
+    const prioritySelectors =
+      SITE_SELECTORS[domain] ??
+      Object.entries(SITE_SELECTORS).find(([k]) => domain.includes(k))?.[1] ??
+      [];
+
+    const allSelectors = [...prioritySelectors, ...GENERIC_SELECTORS];
+
+    for (const sel of allSelectors) {
+      const el = $(sel).first();
+      const text = el.text().trim();
+      if (el.length && text.length > 300) {
+        // Converte links relativos em absolutos
+        const base = new URL(url).origin;
+        el.find("img[src]").each((_, img) => {
+          const src = $(img).attr("src") ?? "";
+          if (src.startsWith("/")) $(img).attr("src", base + src);
+        });
+        el.find("a[href]").each((_, a) => {
+          const href = $(a).attr("href") ?? "";
+          if (href.startsWith("/")) $(a).attr("href", base + href);
+        });
+        return el.html() ?? null;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // Traduz o texto do artigo preservando imagens e vídeos no lugar certo
 async function buildTranslatedHtml(rawHtml: string, locale: string): Promise<string> {
   if (locale === "en") return rawHtml;
 
-  // Divide o HTML em blocos: texto e mídia (imgs e iframes envoltos em .video-wrap)
   const mediaPattern = /(<img[^>]+>|<div class="video-wrap">[\s\S]*?<\/div>)/gi;
   const segments: { type: "text" | "media"; content: string }[] = [];
   let lastIndex = 0;
@@ -98,14 +196,13 @@ async function buildTranslatedHtml(rawHtml: string, locale: string): Promise<str
     segments.push({ type: "text", content: rawHtml.slice(lastIndex) });
   }
 
-  // Traduz os blocos de texto em paralelo (limite de 2000 chars por bloco)
+  // Traduz blocos de texto preservando estrutura HTML básica
   const translated = await Promise.all(
     segments.map(async (seg) => {
       if (seg.type === "media") return seg.content;
       const plain = htmlToText(seg.content);
       if (!plain.trim()) return seg.content;
-      const translatedPlain = await translateText(plain.slice(0, 2000), locale);
-      // Reconstrói HTML com parágrafos traduzidos
+      const translatedPlain = await translateText(plain.slice(0, 500), locale);
       return translatedPlain
         .split("\n\n")
         .filter(Boolean)
@@ -185,11 +282,21 @@ export async function fetchArticleDetail(
       const item = feed.items.find((i) => i.link === originalUrl);
       if (!item) continue;
 
-      const title       = item.title ?? "Sem título";
-      const rawEncoded  = (item as { contentEncoded?: string }).contentEncoded ?? item.content ?? "";
-      const rawHtml     = rawEncoded ? sanitizeHtml(rawEncoded) : `<p>${item.contentSnippet ?? ""}</p>`;
+      const title      = item.title ?? "Sem título";
+      const rssEncoded = (item as { contentEncoded?: string }).contentEncoded ?? item.content ?? "";
 
-      // Traduz título, descrição e corpo do artigo para o idioma escolhido
+      // Tenta scraping da página completa para conteúdo integral
+      const scrapedHtml = await scrapeFullContent(originalUrl);
+
+      // Usa conteúdo scraped > RSS encoded > snippet
+      const baseHtml = scrapedHtml
+        ? scrapedHtml
+        : rssEncoded
+        ? rssEncoded
+        : `<p>${item.contentSnippet ?? ""}</p>`;
+
+      const rawHtml = sanitizeHtml(baseHtml);
+
       const [translatedTitle, translatedDesc, translatedHtml] = await Promise.all([
         translateText(title, locale),
         translateText(item.contentSnippet ?? item.summary ?? "", locale),
@@ -200,7 +307,7 @@ export async function fetchArticleDetail(
         id: makeId(platform, originalUrl),
         title: paraphraseTitle(translatedTitle, locale),
         description: paraphraseDescription(translatedDesc),
-        rawHtml: translatedHtml, // HTML com texto traduzido + imagens/vídeos preservados
+        rawHtml: translatedHtml,
         imageUrl: extractImage(item as RssItem, title),
         originalUrl,
         platform,
@@ -214,8 +321,8 @@ export async function fetchArticleDetail(
 
 export function decodeArticleId(id: string): { platform: Platform; originalUrl: string } | null {
   try {
-    const raw    = Buffer.from(id, "base64url").toString("utf-8");
-    const colon  = raw.indexOf(":");
+    const raw   = Buffer.from(id, "base64url").toString("utf-8");
+    const colon = raw.indexOf(":");
     if (colon === -1) return null;
     return { platform: raw.slice(0, colon) as Platform, originalUrl: raw.slice(colon + 1) };
   } catch { return null; }

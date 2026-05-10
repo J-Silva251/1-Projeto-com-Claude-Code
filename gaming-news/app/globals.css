@@ -147,25 +147,65 @@ body {
   border-radius: 3px;
 }
 
-/* ── Corpo do artigo: tipografia rica com suporte a imagens e vídeos embutidos ── */
+/* ── Corpo do artigo: tipografia rica com suporte a imagens, vídeos, tabelas e listas ── */
 .article-body {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.9375rem;
   line-height: 1.85;
 }
 .article-body p  { margin-bottom: 1.2rem; }
+.article-body h1 { font-size: 1.5rem;  font-weight: 800; color: #fff; margin: 2.5rem 0 0.75rem; }
 .article-body h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; }
 .article-body h3 { font-size: 1.05rem; font-weight: 700; color: rgba(255,255,255,0.9); margin: 1.5rem 0 0.5rem; }
+.article-body h4 { font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.8); margin: 1.2rem 0 0.4rem; }
 .article-body a  { color: #00D4FF; text-decoration: underline; text-underline-offset: 3px; }
 .article-body a:hover { color: #fff; }
-.article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.2rem; }
+.article-body strong, .article-body b { color: #fff; font-weight: 700; }
+.article-body em, .article-body i { color: rgba(255,255,255,0.7); }
+.article-body ul { padding-left: 1.5rem; margin-bottom: 1.2rem; list-style-type: disc; }
+.article-body ol { padding-left: 1.5rem; margin-bottom: 1.2rem; list-style-type: decimal; }
 .article-body li { margin-bottom: 0.4rem; }
 .article-body blockquote {
   border-left: 3px solid rgba(0,212,255,0.5);
-  padding-left: 1rem;
+  padding: 0.75rem 1rem;
   margin: 1.5rem 0;
   color: rgba(255,255,255,0.5);
   font-style: italic;
+  background: rgba(0,212,255,0.04);
+  border-radius: 0 8px 8px 0;
+}
+.article-body pre, .article-body code {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  padding: 0.2em 0.4em;
+}
+.article-body pre { padding: 1rem; overflow-x: auto; margin-bottom: 1.2rem; }
+.article-body pre code { background: none; border: none; padding: 0; }
+/* Tabelas — comuns em artigos de códigos/cheat sheets */
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+.article-body th {
+  background: rgba(0,212,255,0.12);
+  color: #00D4FF;
+  font-weight: 700;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.article-body td {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+}
+.article-body tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
 }
 /* Imagens dentro do artigo */
 .article-body img {
@@ -175,6 +215,14 @@ body {
   margin: 1.5rem auto;
   display: block;
   border: 1px solid rgba(255,255,255,0.08);
+}
+/* Caption / figcaption */
+.article-body figcaption {
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  margin-top: -1rem;
+  margin-bottom: 1.2rem;
 }
 /* Wrapper de vídeo responsivo (YouTube iframes) */
 .article-body .video-wrap {
@@ -192,6 +240,14 @@ body {
   width: 100%;
   height: 100%;
   border: none;
+}
+/* Seção de destaque / callout */
+.article-body .callout, .article-body .tip, .article-body .note, .article-body .info {
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0;
 }
 /* Spinner de carregamento CSS */
 @keyframes spin { to { transform: rotate(360deg); } }
