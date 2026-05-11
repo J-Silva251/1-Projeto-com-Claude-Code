@@ -1,5 +1,7 @@
 import Parser from "rss-parser";
 import * as cheerio from "cheerio";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
 import { paraphraseTitle, paraphraseDescription } from "./paraphraser";
 import { translateBatch, translateText } from "./translator";
 import type { NewsItem, ArticleDetail, Platform } from "@/types";
@@ -43,7 +45,7 @@ const FEEDS: Record<Platform, { url: string; source: string }[]> = {
 const SITE_SELECTORS: Record<string, string[]> = {
   "pocketgamer.com":     [".article-body", ".article__body", ".article-content", ".post-content"],
   "pocketgamer.biz":     [".article-body", ".article__body", ".post-content"],
-  "pcgamer.com":         ["#article-body", ".article-body", ".article__body"],
+  "pcgamer.com":         ["#article-body", ".article-body", ".article__body", "[class*='article-body']", ".bodyCopy", ".body-copy"],
   "rockpapershotgun.com":[".article-content", ".entry-content", "article .content"],
   "purexbox.com":        [".article-body", ".article__body"],
   "pushsquare.com":      [".article-body", ".article__body"],
@@ -52,6 +54,23 @@ const SITE_SELECTORS: Record<string, string[]> = {
   "news.xbox.com":       [".c-article-body", ".article__body", ".content-body"],
   "blog.playstation.com":[".entry-content", ".article__body"],
 };
+
+// Seletores de autor por domínio
+const AUTHOR_SELECTORS: Record<string, string[]> = {
+  "pcgamer.com":         [".author-name", ".byline-name", "[rel='author']", ".writer-name", ".author a", ".contributors a", "[class*='author'] a"],
+  "rockpapershotgun.com":[".byline-name", "[rel='author']", ".byline a", ".author a"],
+  "purexbox.com":        [".author-name", ".byline a", "[rel='author']"],
+  "pushsquare.com":      [".author-name", ".byline a", "[rel='author']"],
+  "nintendolife.com":    [".author-name", ".byline a", "[rel='author']"],
+  "mynintendonews.com":  [".author a", "[rel='author']", ".byline a"],
+  "news.xbox.com":       [".author", "[rel='author']", ".byline a"],
+  "blog.playstation.com":[".author", "[rel='author']", ".byline a"],
+};
+
+const GENERIC_AUTHOR_SELECTORS = [
+  "[rel='author']", ".author-name", ".byline-name",
+  ".author a", ".byline a", "[class*='author'] a", "[class*='byline'] a",
+];
 
 const GENERIC_SELECTORS = [
   "[itemprop='articleBody']",
@@ -69,17 +88,57 @@ const GLOBAL_JUNK = [
   ".social-share", ".share-buttons", "[class*='social-share']",
   "[class*='cookie']", "[class*='popup']", "[class*='modal']",
   "iframe[src*='doubleclick']", "iframe[src*='googlesyndication']",
-  "iframe[src*='adnxs']",
+  "iframe[src*='adnxs']", "iframe[src*='taboola']", "iframe[src*='outbrain']",
 ];
 
-// Remove DENTRO do conteúdo extraído (artigos relacionados, asides de promo)
+// Remove DENTRO do conteúdo extraído — limpeza agressiva de tudo que não é notícia
 const INNER_JUNK = [
-  "[class*='related-article']", "[class*='related-post']", "[class*='related-content']",
-  "[class*='related-news']", "[class*='recommended']", "[class*='you-might']",
-  "[class*='you-may']", "[class*='also-read']", "[class*='read-also']",
+  // Artigos relacionados / leia a seguir
+  "[class*='related']", "[class*='recommended']",
+  "[class*='you-might']", "[class*='you-may']",
+  "[class*='also-read']", "[class*='read-also']",
   "[class*='further-reading']", "[class*='more-from']", "[class*='more-news']",
-  "[class*='see-also']", "[class*='trending']",
+  "[class*='see-also']", "[class*='read-next']", "[class*='next-article']",
+  "[class*='next-up']", "[class*='up-next']", "[class*='continue-reading']",
+  "[class*='read-more']", "[class*='keep-reading']",
   ".related", ".recommended",
+  // Enquetes / polls / quiz / voto
+  "[class*='poll']", "[class*='survey']", "[class*='quiz']", "[class*='vote']",
+  "[class*='voting']", "[class*='pollblock']", "form",
+  // Widgets comerciais e afiliados
+  "[class*='widget']", "[class*='promo']", "[class*='sponsored']",
+  "[class*='commerce']", "[class*='hawk-widget']", "[class*='product-widget']",
+  "[class*='buying-guide']", "[class*='best-pick']", "[class*='affiliate']",
+  "[class*='deal']", "[class*='price']", "[class*='buybox']",
+  // Newsletter / assinatura / CTA
+  "[class*='newsletter']", "[class*='subscribe']", "[class*='signup']",
+  "[class*='sign-up']", "[class*='cta']", "[class*='offer']",
+  // Compartilhamento e social dentro do corpo
+  "[class*='share']", "[class*='social']",
+  // Tags e categorias no final
+  "[class*='tag-list']", "[class*='tags']", ".tags",
+  // Bio e box do autor
+  "[class*='author-bio']", "[class*='author-box']", "[class*='author-card']",
+  "[class*='about-author']",
+  // Barras laterais embutidas
+  "aside",
+  // Tabela de conteúdos
+  "[class*='table-of-contents']", "[class*='toc']",
+  // Publicidade interna
+  "[class*='dfp']", "[class*='gpt-']", "[class*='teads']",
+  "[class*='taboola']", "[class*='outbrain']", "[class*='mgid']",
+  // Trending e popular
+  "[class*='trending']", "[class*='popular']", "[class*='most-read']",
+  // Paginação dentro do artigo
+  "[class*='pagination']", "[class*='page-nav']",
+];
+
+// Frases que indicam blocos de "leia a seguir" / "veja também"
+const READ_NEXT_PHRASES = [
+  "read next", "read more", "see also", "related:", "more from",
+  "leia também", "leia a seguir", "veja também", "mais sobre",
+  "lea también", "también te puede", "sigue leyendo",
+  "don't miss", "check out", "trending now", "most popular",
 ];
 
 interface RssItem {
@@ -121,15 +180,6 @@ function sanitizeHtml(html: string): string {
     .replace(/<video([^>]*?)>/gi, '<video$1 controls style="max-width:100%;border-radius:10px;margin:1.5rem 0">');
 }
 
-function htmlToText(html: string): string {
-  return html
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\s{3,}/g, "\n\n")
-    .trim();
-}
-
 /** Converte qualquer URL relativa ou protocol-relative em absoluta */
 function toAbsolute(href: string, base: string): string {
   if (!href) return href;
@@ -138,8 +188,13 @@ function toAbsolute(href: string, base: string): string {
   try { return new URL(href, base).href; } catch { return href; }
 }
 
-/** Busca o conteúdo completo da página original, incluindo vídeos */
-async function scrapeFullContent(url: string): Promise<string | null> {
+interface ScrapeResult {
+  html: string | null;
+  author: string | null;
+}
+
+/** Busca o conteúdo completo via Readability (Firefox Reader Mode) + fallback Cheerio */
+async function scrapeFullContent(url: string, heroUrl = ""): Promise<ScrapeResult> {
   try {
     const res = await fetch(url, {
       headers: {
@@ -152,126 +207,260 @@ async function scrapeFullContent(url: string): Promise<string | null> {
       signal: AbortSignal.timeout(20000),
     });
 
-    if (!res.ok) return null;
-    const html = await res.text();
-    const $ = cheerio.load(html);
+    if (!res.ok) return { html: null, author: null };
+    const rawHtmlStr = await res.text();
 
-    // 1. Converte lazy-load de iframes ANTES de remover junk
-    //    (YouTube embedded com data-src → src real)
-    $("iframe[data-src]").each((_, el) => {
-      const lazy = $(el).attr("data-src") ?? "";
-      if (lazy) { $(el).attr("src", lazy); $(el).removeAttr("data-src"); }
-    });
+    // Pré-processa o HTML bruto para resolver lazy-load ANTES do Readability
+    // (Readability não executa JS, então data-src precisa virar src antes dele rodar)
+    // Remove src existente e usa data-src como src para evitar atributos duplicados
+    const preProcessed = rawHtmlStr
+      // iframes: remove src="" original e usa data-src como src
+      .replace(/<iframe([^>]*?)\s+data-src=(["'])([^"']+)\2([^>]*?)>/gi,
+        (_, before, q, dataSrc, after) => {
+          const cleanBefore = before.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          const cleanAfter = after.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          return `<iframe${cleanBefore} src="${dataSrc}"${cleanAfter}>`;
+        })
+      // imagens: usa data-src/data-lazy-src como src
+      .replace(/<img([^>]*?)\s+data-(?:lazy-)?src=(["'])([^"']+)\2([^>]*?)>/gi,
+        (_, before, q, lazySrc, after) => {
+          const cleanBefore = before.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          const cleanAfter = after.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          return `<img${cleanBefore} src="${lazySrc}"${cleanAfter}>`;
+        })
+      .replace(/<img([^>]*?)\s+data-original=(["'])([^"']+)\2([^>]*?)>/gi,
+        (_, before, q, orig, after) => {
+          const cleanBefore = before.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          const cleanAfter = after.replace(/\s+src=(["'])[^"']*\1/gi, "");
+          return `<img${cleanBefore} src="${orig}"${cleanAfter}>`;
+        });
 
-    // 2. Converte lazy-load de imagens
-    $("img").each((_, el) => {
-      const lazy =
-        $(el).attr("data-src") ??
-        $(el).attr("data-lazy-src") ??
-        $(el).attr("data-original") ??
-        $(el).attr("data-lazy") ?? "";
-      if (lazy && !$(el).attr("src")) $(el).attr("src", lazy);
-    });
-
-    // 3. Remove lixo global
-    GLOBAL_JUNK.forEach((sel) => {
-      try { $(sel).remove(); } catch { /* seletor inválido */ }
-    });
-
-    // 4. Determina seletores prioritários pelo domínio
-    const domain = new URL(url).hostname.replace("www.", "");
-    const prioritySelectors =
-      SITE_SELECTORS[domain] ??
-      Object.entries(SITE_SELECTORS).find(([k]) => domain.includes(k))?.[1] ??
-      [];
-    const allSelectors = [...prioritySelectors, ...GENERIC_SELECTORS];
-
-    // 5. Encontra elemento de conteúdo
-    let contentEl: ReturnType<typeof $> | null = null;
-    for (const sel of allSelectors) {
-      const el = $(sel).first();
-      if (el.length && el.text().trim().length > 300) {
-        contentEl = el;
-        break;
+    // Extrai vídeos do HTML bruto ANTES do Readability (Readability remove iframes)
+    const VIDEO_SRC_RE = /(?:src|data-src)=(["'])(https?:\/\/[^"']*(?:youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com|twitch\.tv|players\.brightcove\.net|dailymotion\.com)[^"']*)\1/i;
+    const embeddedVideos: string[] = [];
+    const iframeTagRe = /<iframe[^>]+>/gi;
+    let iframeTagMatch;
+    while ((iframeTagMatch = iframeTagRe.exec(rawHtmlStr)) !== null) {
+      const srcMatch = VIDEO_SRC_RE.exec(iframeTagMatch[0]);
+      if (srcMatch) {
+        // Remove autoplay e usa src limpo
+        const src = srcMatch[2].replace(/[?&]autoplay=1/gi, (m) => m.startsWith("?") ? "?" : "");
+        embeddedVideos.push(
+          `<div class="video-wrap"><iframe src="${src}" loading="lazy" allowfullscreen ` +
+          `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`
+        );
       }
     }
-    if (!contentEl) return null;
 
-    // 6. Remove artigos relacionados e promos de dentro do conteúdo
-    INNER_JUNK.forEach((sel) => {
-      try { contentEl!.find(sel).remove(); } catch { /* seletor inválido */ }
-    });
+    // Readability (mesmo motor do Firefox Reader Mode)
+    const dom = new JSDOM(preProcessed, { url });
+    const reader = new Readability(dom.window.document, { keepClasses: false });
+    const parsed = reader.parse();
 
-    // 7. Converte todas as URLs relativas → absolutas (imgs, links, iframes)
-    contentEl.find("img[src]").each((_, el) => {
-      const src = $(el).attr("src") ?? "";
-      const abs = toAbsolute(src, url);
-      if (abs !== src) $(el).attr("src", abs);
-    });
-    contentEl.find("a[href]").each((_, el) => {
-      const href = $(el).attr("href") ?? "";
-      if (href.startsWith("#") || href.startsWith("mailto:")) return;
-      const abs = toAbsolute(href, url);
-      if (abs !== href) {
-        $(el).attr("href", abs);
-        // Links externos abrem em nova aba
-        $(el).attr("target", "_blank").attr("rel", "noopener noreferrer");
+    if (!parsed?.content) return { html: null, author: null };
+
+    // Processa o HTML limpo do Readability com Cheerio
+    const $ = cheerio.load(parsed.content);
+
+    // Reconstrói HTML limpo — só texto, imagens e vídeos na ordem original
+    let cleanHtml = buildCleanArticle($, $.root(), url);
+
+    // Injeta vídeos que o Readability descartou — após o primeiro parágrafo
+    if (cleanHtml && embeddedVideos.length > 0) {
+      const videosHtml = embeddedVideos.join("\n");
+      const firstClose = cleanHtml.indexOf("</p>");
+      if (firstClose !== -1) {
+        cleanHtml = cleanHtml.slice(0, firstClose + 4) + "\n" + videosHtml + cleanHtml.slice(firstClose + 4);
+      } else {
+        cleanHtml = videosHtml + "\n" + cleanHtml;
       }
-    });
-    contentEl.find("iframe[src]").each((_, el) => {
-      const src = $(el).attr("src") ?? "";
-      const abs = toAbsolute(src, url);
-      if (abs !== src) $(el).attr("src", abs);
-    });
-    contentEl.find("source[src]").each((_, el) => {
-      const src = $(el).attr("src") ?? "";
-      $(el).attr("src", toAbsolute(src, url));
-    });
+    }
 
-    return contentEl.html() ?? null;
+    return {
+      html: cleanHtml,
+      author: parsed.byline?.replace(/^by\s+/i, "").trim() ?? null,
+    };
   } catch {
-    return null;
+    return { html: null, author: null };
   }
 }
 
-/** Traduz o texto preservando mídias (imgs, vídeos, iframes) no lugar certo */
+/**
+ * Reconstrói o artigo do zero com HTML limpo.
+ * Abordagem whitelist: só extrai p, h2-h6, ul, ol, blockquote, figure, img e vídeos.
+ * Remove qualquer div, section, aside, widget, enquete ou lixo estrutural.
+ */
+function buildCleanArticle(
+  $: ReturnType<typeof cheerio.load>,
+  contentEl: ReturnType<ReturnType<typeof cheerio.load>>,
+  baseUrl: string
+): string | null {
+  const parts: string[] = [];
+  const VIDEO_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com", "twitch.tv", "player.twitch.tv", "dailymotion.com", "players.brightcove.net"];
+  // Primeira imagem é sempre o hero (já exibido acima do corpo), então pulamos
+  let firstImageSkipped = false;
+
+  contentEl.find("p, h2, h3, h4, h5, h6, ul, ol, blockquote, figure, img, video, iframe").each((_, el) => {
+    const $el = $(el);
+    const tag = (el as { tagName: string }).tagName.toLowerCase();
+
+    // Não reprocessa elementos já capturados pelo seu container
+    if (["p", "h2", "h3", "h4", "h5", "h6"].includes(tag) && $el.closest("blockquote, li, figure").length > 0) return;
+    if (tag === "img" && $el.closest("figure").length > 0) return;
+    if (tag === "iframe" && $el.closest("figure").length > 0) return;
+
+    if (tag === "iframe") {
+      const src = toAbsolute($el.attr("src") ?? $el.attr("data-src") ?? "", baseUrl);
+      if (VIDEO_HOSTS.some((h) => src.includes(h))) {
+        parts.push(
+          `<div class="video-wrap"><iframe src="${src}" loading="lazy" allowfullscreen ` +
+          `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`
+        );
+      }
+      return;
+    }
+
+    if (tag === "video") {
+      const src = toAbsolute(
+        $el.find("source").first().attr("src") ?? $el.attr("src") ?? "", baseUrl
+      );
+      if (src) parts.push(`<video src="${src}" controls style="max-width:100%;border-radius:10px;margin:1.5rem 0"></video>`);
+      return;
+    }
+
+    if (tag === "img") {
+      const src = toAbsolute($el.attr("src") ?? "", baseUrl);
+      const alt = $el.attr("alt") ?? "";
+      const w = parseInt($el.attr("width") ?? "100", 10);
+      const h = parseInt($el.attr("height") ?? "100", 10);
+      if (!src || w <= 10 || h <= 10) return;
+      // Pula a primeira imagem — é o hero já exibido acima do corpo
+      if (!firstImageSkipped) { firstImageSkipped = true; return; }
+      parts.push(`<img src="${src}" alt="${alt}" loading="lazy">`);
+      return;
+    }
+
+    if (tag === "figure") {
+      const caption = $el.find("figcaption").first().text().trim();
+
+      // Verifica se tem iframe de vídeo dentro da figure
+      const iframeEl = $el.find("iframe").first();
+      if (iframeEl.length) {
+        const iframeSrc = toAbsolute(iframeEl.attr("src") ?? iframeEl.attr("data-src") ?? "", baseUrl);
+        if (iframeSrc && VIDEO_HOSTS.some((h) => iframeSrc.includes(h))) {
+          parts.push(
+            `<div class="video-wrap"><iframe src="${iframeSrc}" loading="lazy" allowfullscreen ` +
+            `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>` +
+            (caption ? `<p class="video-caption">${caption}</p>` : "")
+          );
+        }
+        return;
+      }
+
+      // Imagem normal na figure
+      const img = $el.find("img").first();
+      const src = toAbsolute(
+        img.attr("src") ?? img.attr("data-src") ?? img.attr("data-lazy-src") ?? "", baseUrl
+      );
+      const alt = img.attr("alt") ?? "";
+      if (!src) return;
+      // Pula a primeira figura — é o hero já exibido acima do corpo
+      if (!firstImageSkipped) { firstImageSkipped = true; return; }
+      parts.push(
+        `<figure><img src="${src}" alt="${alt}" loading="lazy">${caption ? `<figcaption>${caption}</figcaption>` : ""}</figure>`
+      );
+      return;
+    }
+
+    const text = $el.text().trim();
+    if (!text || text.length < 2) return;
+
+    // Filtra frases de "leia a seguir" etc
+    const lower = text.toLowerCase();
+    if (text.length < 150 && READ_NEXT_PHRASES.some((p) => lower.includes(p))) return;
+
+    if (tag === "blockquote") {
+      parts.push(`<blockquote><p>${text}</p></blockquote>`);
+    } else if (tag === "ul" || tag === "ol") {
+      const items = $el.find("li").map((_, li) => `<li>${$(li).text().trim()}</li>`).get().filter(Boolean);
+      if (items.length) parts.push(`<${tag}>${items.join("")}</${tag}>`);
+    } else {
+      // p, h2, h3, h4, h5, h6
+      parts.push(`<${tag}>${text}</${tag}>`);
+    }
+  });
+
+  return parts.length ? parts.join("\n") : null;
+}
+
+/** Quebra texto em chunks de até 490 chars preservando frases */
+function chunkText(text: string): string[] {
+  if (text.length <= 490) return [text];
+  const result: string[] = [];
+  let buf = "";
+  for (const part of text.split(/(?<=[.!?])\s+/)) {
+    if (buf && (buf + " " + part).length > 490) {
+      result.push(buf.trim());
+      buf = part;
+    } else {
+      buf = buf ? `${buf} ${part}` : part;
+    }
+  }
+  if (buf.trim()) result.push(buf.trim());
+  return result.length ? result : [text.slice(0, 490)];
+}
+
+/** Traduz texto longo dividindo em chunks para respeitar o limite da API */
+async function translateLong(text: string, locale: string): Promise<string> {
+  const chunks = chunkText(text);
+  if (chunks.length === 1) return translateText(chunks[0], locale);
+  const parts = await translateBatch(chunks, locale);
+  return parts.join(" ");
+}
+
+/** Traduz o HTML preservando a estrutura de blocos (h2, h3, p, li, etc.) */
 async function buildTranslatedHtml(rawHtml: string, locale: string): Promise<string> {
   if (locale === "en") return rawHtml;
 
-  // Captura: img isolado, video completo, div.video-wrap completo
-  const mediaPattern =
-    /(<img[^>]+>|<video[\s\S]*?<\/video>|<div class="video-wrap">[\s\S]*?<\/div>)/gi;
+  const $ = cheerio.load(`<div id="__t">${rawHtml}</div>`);
+  const root = $("#__t");
 
-  const segments: { type: "text" | "media"; content: string }[] = [];
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
+  const BLOCKS = "p, h2, h3, h4, h5, h6, li, blockquote, figcaption, td";
+  type QueueEntry = { $el: ReturnType<typeof $>; text: string };
+  const queue: QueueEntry[] = [];
 
-  while ((match = mediaPattern.exec(rawHtml)) !== null) {
-    if (match.index > lastIndex) {
-      segments.push({ type: "text", content: rawHtml.slice(lastIndex, match.index) });
-    }
-    segments.push({ type: "media", content: match[0] });
-    lastIndex = match.index + match[0].length;
+  root.find(BLOCKS).each((_, el) => {
+    const $el = $(el);
+    // Ignora li com listas aninhadas para não destruir estrutura
+    if ((el as { tagName?: string }).tagName === "li" && $el.find("ul, ol").length > 0) return;
+    // Texto sem elementos de mídia
+    const text = $el.clone().find("img,video,iframe,picture").remove().end().text().trim();
+    if (text.length > 3) queue.push({ $el, text });
+  });
+
+  if (!queue.length) return rawHtml;
+
+  const BATCH = 3;
+  for (let i = 0; i < queue.length; i += BATCH) {
+    const slice = queue.slice(i, i + BATCH);
+    const results = await Promise.all(slice.map(({ text }) => translateLong(text, locale)));
+
+    slice.forEach(({ $el }, j) => {
+      // Salva mídia filha para restaurar depois
+      const savedMedia: string[] = [];
+      $el.find("img,video,iframe,picture,source").each((_, m) => {
+        savedMedia.push($.html($(m)));
+      });
+      // Substitui o texto (preserva a tag de bloco mas perde formatação inline)
+      $el.text(results[j]);
+      // Restaura mídia
+      if (savedMedia.length) $el.append(savedMedia.join(""));
+    });
+
+    if (i + BATCH < queue.length) await new Promise((r) => setTimeout(r, 200));
   }
-  if (lastIndex < rawHtml.length) {
-    segments.push({ type: "text", content: rawHtml.slice(lastIndex) });
-  }
 
-  const translated = await Promise.all(
-    segments.map(async (seg) => {
-      if (seg.type === "media") return seg.content;
-      const plain = htmlToText(seg.content);
-      if (!plain.trim()) return seg.content;
-      const translatedPlain = await translateText(plain.slice(0, 500), locale);
-      return translatedPlain
-        .split("\n\n")
-        .filter(Boolean)
-        .map((p) => `<p>${p.trim()}</p>`)
-        .join("\n");
-    })
-  );
-
-  return translated.join("\n");
+  return root.html() ?? rawHtml;
 }
 
 function makeId(platform: Platform, url: string): string {
@@ -346,9 +535,10 @@ export async function fetchArticleDetail(
       const rssEncoded = (item as { contentEncoded?: string }).contentEncoded ?? item.content ?? "";
 
       // Conteúdo completo: scraping da página > RSS contentEncoded > snippet
-      const scrapedHtml = await scrapeFullContent(originalUrl);
+      const heroUrl = extractImage(item as RssItem, title);
+      const scraped = await scrapeFullContent(originalUrl, heroUrl);
       const baseHtml =
-        scrapedHtml ||
+        scraped.html ||
         (rssEncoded ? rssEncoded : `<p>${item.contentSnippet ?? ""}</p>`);
 
       const rawHtml = sanitizeHtml(baseHtml);
@@ -368,6 +558,7 @@ export async function fetchArticleDetail(
         originalUrl,
         platform,
         source,
+        author: scraped.author ?? undefined,
         publishedAt: item.isoDate ?? item.pubDate ?? new Date().toISOString(),
       };
     } catch { /* Tenta próximo feed */ }

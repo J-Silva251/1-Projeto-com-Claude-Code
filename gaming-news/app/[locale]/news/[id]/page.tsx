@@ -105,7 +105,7 @@ export default function ArticlePage() {
               {article.title}
             </h1>
 
-            {/* Meta: fonte + data */}
+            {/* Meta: fonte + autor + data */}
             <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/10">
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-none"
@@ -115,6 +115,11 @@ export default function ArticlePage() {
               </div>
               <div>
                 <p className="text-xs font-semibold text-white/70">{article.source}</p>
+                {article.author && (
+                  <p className="text-[11px] text-white/60 font-medium">
+                    {locale === "pt" ? "Por" : locale === "es" ? "Por" : "By"} {article.author}
+                  </p>
+                )}
                 <p className="text-[10px] text-white/30 font-mono">{formatDate(article.publishedAt, locale)}</p>
               </div>
 

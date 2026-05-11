@@ -14,6 +14,7 @@ export interface NewsItem {
 // Extensão usada apenas na página de artigo (não trafega no grid)
 export interface ArticleDetail extends NewsItem {
   rawHtml: string;
+  author?: string;
 }
 
 export interface PlatformConfig {
