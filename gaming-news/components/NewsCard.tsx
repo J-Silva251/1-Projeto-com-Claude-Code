@@ -45,6 +45,7 @@ export default function NewsCard({ item, index = 0 }: NewsCardProps) {
           alt={item.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
+          priority={index === 0}
           unoptimized
         />
         {/* Gradiente sobre a imagem */}
