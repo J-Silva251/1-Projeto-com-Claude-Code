@@ -2,9 +2,16 @@ import Parser from "rss-parser";
 import * as cheerio from "cheerio";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
+import DOMPurify from "isomorphic-dompurify";
 import { paraphraseTitle, paraphraseDescription } from "./paraphraser";
 import { translateBatch, translateText } from "./translator";
 import type { NewsItem, ArticleDetail, Platform } from "@/types";
+
+// Hosts de vídeo permitidos em <iframe> — qualquer outro iframe é descartado
+export const VIDEO_HOSTS = [
+  "youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com",
+  "twitch.tv", "player.twitch.tv", "dailymotion.com", "players.brightcove.net",
+];
 
 const parser = new Parser({
   customFields: {
@@ -40,98 +47,6 @@ const FEEDS: Record<Platform, { url: string; source: string }[]> = {
     { url: "https://www.pocketgamer.biz/feed/", source: "Pocket Gamer Biz" },
   ],
 };
-
-// Seletores do corpo principal por domínio
-const SITE_SELECTORS: Record<string, string[]> = {
-  "pocketgamer.com":     [".article-body", ".article__body", ".article-content", ".post-content"],
-  "pocketgamer.biz":     [".article-body", ".article__body", ".post-content"],
-  "pcgamer.com":         ["#article-body", ".article-body", ".article__body", "[class*='article-body']", ".bodyCopy", ".body-copy"],
-  "rockpapershotgun.com":[".article-content", ".entry-content", "article .content"],
-  "purexbox.com":        [".article-body", ".article__body"],
-  "pushsquare.com":      [".article-body", ".article__body"],
-  "nintendolife.com":    [".article-body", ".article__body"],
-  "mynintendonews.com":  [".entry-content", ".post-content"],
-  "news.xbox.com":       [".c-article-body", ".article__body", ".content-body"],
-  "blog.playstation.com":[".entry-content", ".article__body"],
-};
-
-// Seletores de autor por domínio
-const AUTHOR_SELECTORS: Record<string, string[]> = {
-  "pcgamer.com":         [".author-name", ".byline-name", "[rel='author']", ".writer-name", ".author a", ".contributors a", "[class*='author'] a"],
-  "rockpapershotgun.com":[".byline-name", "[rel='author']", ".byline a", ".author a"],
-  "purexbox.com":        [".author-name", ".byline a", "[rel='author']"],
-  "pushsquare.com":      [".author-name", ".byline a", "[rel='author']"],
-  "nintendolife.com":    [".author-name", ".byline a", "[rel='author']"],
-  "mynintendonews.com":  [".author a", "[rel='author']", ".byline a"],
-  "news.xbox.com":       [".author", "[rel='author']", ".byline a"],
-  "blog.playstation.com":[".author", "[rel='author']", ".byline a"],
-};
-
-const GENERIC_AUTHOR_SELECTORS = [
-  "[rel='author']", ".author-name", ".byline-name",
-  ".author a", ".byline a", "[class*='author'] a", "[class*='byline'] a",
-];
-
-const GENERIC_SELECTORS = [
-  "[itemprop='articleBody']",
-  "article .body", "article .content",
-  ".article-body", ".post-body", ".entry-content", ".post-content",
-  "article", "main",
-];
-
-// Remove antes de extrair (global — ads, nav, scripts)
-const GLOBAL_JUNK = [
-  "script", "style", "noscript",
-  "nav", "header", "footer",
-  ".ad", ".ads", ".advertisement", ".advert", "[class*='banner-ad']",
-  ".newsletter", ".subscribe", "[class*='newsletter']", "[class*='subscribe']",
-  ".social-share", ".share-buttons", "[class*='social-share']",
-  "[class*='cookie']", "[class*='popup']", "[class*='modal']",
-  "iframe[src*='doubleclick']", "iframe[src*='googlesyndication']",
-  "iframe[src*='adnxs']", "iframe[src*='taboola']", "iframe[src*='outbrain']",
-];
-
-// Remove DENTRO do conteúdo extraído — limpeza agressiva de tudo que não é notícia
-const INNER_JUNK = [
-  // Artigos relacionados / leia a seguir
-  "[class*='related']", "[class*='recommended']",
-  "[class*='you-might']", "[class*='you-may']",
-  "[class*='also-read']", "[class*='read-also']",
-  "[class*='further-reading']", "[class*='more-from']", "[class*='more-news']",
-  "[class*='see-also']", "[class*='read-next']", "[class*='next-article']",
-  "[class*='next-up']", "[class*='up-next']", "[class*='continue-reading']",
-  "[class*='read-more']", "[class*='keep-reading']",
-  ".related", ".recommended",
-  // Enquetes / polls / quiz / voto
-  "[class*='poll']", "[class*='survey']", "[class*='quiz']", "[class*='vote']",
-  "[class*='voting']", "[class*='pollblock']", "form",
-  // Widgets comerciais e afiliados
-  "[class*='widget']", "[class*='promo']", "[class*='sponsored']",
-  "[class*='commerce']", "[class*='hawk-widget']", "[class*='product-widget']",
-  "[class*='buying-guide']", "[class*='best-pick']", "[class*='affiliate']",
-  "[class*='deal']", "[class*='price']", "[class*='buybox']",
-  // Newsletter / assinatura / CTA
-  "[class*='newsletter']", "[class*='subscribe']", "[class*='signup']",
-  "[class*='sign-up']", "[class*='cta']", "[class*='offer']",
-  // Compartilhamento e social dentro do corpo
-  "[class*='share']", "[class*='social']",
-  // Tags e categorias no final
-  "[class*='tag-list']", "[class*='tags']", ".tags",
-  // Bio e box do autor
-  "[class*='author-bio']", "[class*='author-box']", "[class*='author-card']",
-  "[class*='about-author']",
-  // Barras laterais embutidas
-  "aside",
-  // Tabela de conteúdos
-  "[class*='table-of-contents']", "[class*='toc']",
-  // Publicidade interna
-  "[class*='dfp']", "[class*='gpt-']", "[class*='teads']",
-  "[class*='taboola']", "[class*='outbrain']", "[class*='mgid']",
-  // Trending e popular
-  "[class*='trending']", "[class*='popular']", "[class*='most-read']",
-  // Paginação dentro do artigo
-  "[class*='pagination']", "[class*='page-nav']",
-];
 
 // Frases que indicam blocos de "leia a seguir" / "veja também"
 const READ_NEXT_PHRASES = [
@@ -180,6 +95,35 @@ function sanitizeHtml(html: string): string {
     .replace(/<video([^>]*?)>/gi, '<video$1 controls style="max-width:100%;border-radius:10px;margin:1.5rem 0">');
 }
 
+/**
+ * Sanitização final (defesa principal contra XSS) aplicada ao HTML já traduzido
+ * imediatamente antes de ir para o cliente. Usa DOMPurify com allowlist estrita
+ * e depois remove qualquer <iframe> cujo host não seja de vídeo conhecido.
+ */
+export function sanitizeFinalHtml(html: string): string {
+  if (!html) return "";
+
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      "p", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "blockquote",
+      "figure", "figcaption", "img", "video", "source", "iframe",
+      "strong", "em", "a", "br", "div",
+    ],
+    ALLOWED_ATTR: [
+      "src", "alt", "href", "class", "controls", "loading",
+      "allowfullscreen", "allow", "width", "height", "style", "target", "rel",
+    ],
+    ALLOWED_URI_REGEXP: /^(?:https?:|data:image\/)/i,
+    ADD_ATTR: ["allowfullscreen"],
+  });
+
+  // Remove iframes que não sejam de hosts de vídeo permitidos
+  return clean.replace(/<iframe\b[^>]*>/gi, (tag) => {
+    const src = tag.match(/\ssrc=["']([^"']+)["']/i)?.[1] ?? "";
+    return VIDEO_HOSTS.some((h) => src.includes(h)) ? tag : "";
+  });
+}
+
 /** Converte qualquer URL relativa ou protocol-relative em absoluta */
 function toAbsolute(href: string, base: string): string {
   if (!href) return href;
@@ -194,7 +138,7 @@ interface ScrapeResult {
 }
 
 /** Busca o conteúdo completo via Readability (Firefox Reader Mode) + fallback Cheerio */
-async function scrapeFullContent(url: string, heroUrl = ""): Promise<ScrapeResult> {
+async function scrapeFullContent(url: string): Promise<ScrapeResult> {
   try {
     const res = await fetch(url, {
       headers: {
@@ -296,7 +240,6 @@ function buildCleanArticle(
   baseUrl: string
 ): string | null {
   const parts: string[] = [];
-  const VIDEO_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com", "twitch.tv", "player.twitch.tv", "dailymotion.com", "players.brightcove.net"];
   // Primeira imagem é sempre o hero (já exibido acima do corpo), então pulamos
   let firstImageSkipped = false;
 
@@ -535,8 +478,7 @@ export async function fetchArticleDetail(
       const rssEncoded = (item as { contentEncoded?: string }).contentEncoded ?? item.content ?? "";
 
       // Conteúdo completo: scraping da página > RSS contentEncoded > snippet
-      const heroUrl = extractImage(item as RssItem, title);
-      const scraped = await scrapeFullContent(originalUrl, heroUrl);
+      const scraped = await scrapeFullContent(originalUrl);
       const baseHtml =
         scraped.html ||
         (rssEncoded ? rssEncoded : `<p>${item.contentSnippet ?? ""}</p>`);
@@ -553,7 +495,7 @@ export async function fetchArticleDetail(
         id: makeId(platform, originalUrl),
         title: paraphraseTitle(translatedTitle, locale),
         description: paraphraseDescription(translatedDesc),
-        rawHtml: translatedHtml,
+        rawHtml: sanitizeFinalHtml(translatedHtml),
         imageUrl: extractImage(item as RssItem, title),
         originalUrl,
         platform,

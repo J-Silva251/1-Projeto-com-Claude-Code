@@ -1,8 +1,9 @@
 // Cache em memória — evita retraduzir o mesmo texto enquanto o processo vive
 const cache = new Map<string, string>();
 
-// Email registrado aumenta o limite do MyMemory de 5k para 10k chars/dia
-const MYMEMORY_EMAIL = "astarkedu251@gmail.com";
+// Email registrado aumenta o limite do MyMemory de 5k para 10k chars/dia.
+// Configurado via env (MYMEMORY_EMAIL); vazio = usa o limite menor de anônimo.
+const MYMEMORY_EMAIL = process.env.MYMEMORY_EMAIL ?? "";
 
 async function translateOne(text: string, to: string): Promise<string> {
   if (!text.trim() || to === "en") return text;
@@ -15,7 +16,7 @@ async function translateOne(text: string, to: string): Promise<string> {
       `https://api.mymemory.translated.net/get` +
       `?q=${encodeURIComponent(text.slice(0, 500))}` +
       `&langpair=en|${to}` +
-      `&de=${encodeURIComponent(MYMEMORY_EMAIL)}`;
+      (MYMEMORY_EMAIL ? `&de=${encodeURIComponent(MYMEMORY_EMAIL)}` : "");
 
     const res = await fetch(url, {
       signal: AbortSignal.timeout(8000),

@@ -1,4 +1,5 @@
 import createNextIntlPlugin from "next-intl/plugin";
+import { securityHeaders } from "./lib/securityHeaders.mjs";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -20,6 +21,10 @@ const nextConfig = {
 
   // Suprime avisos de hydration que ocorrem com framer-motion em SSR
   reactStrictMode: false,
+
+  async headers() {
+    return [{ source: "/(.*)", headers: securityHeaders }];
+  },
 };
 
 export default withNextIntl(nextConfig);
