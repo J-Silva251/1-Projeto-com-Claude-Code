@@ -56,4 +56,10 @@ gaming-news/
 
 ## 📄 Licença
 
-Projeto de portfólio. Conteúdo de notícias agregado de fontes públicas via RSS.
+Copyright (C) 2026 J-Silva251
+
+Distribuído sob a **GNU Affero General Public License v3.0 (AGPL-3.0)** — veja o arquivo [LICENSE](LICENSE).
+
+> ⚠️ **Importante:** a AGPL-3.0 é uma licença *copyleft de rede*. Qualquer pessoa que **modificar este site e disponibilizá-lo online** (mesmo sem distribuir o código) é **obrigada a publicar o código-fonte com as modificações** sob esta mesma licença. Isso garante que melhorias feitas a partir deste projeto permaneçam abertas e disponíveis.
+
+Conteúdo de notícias agregado de fontes públicas via RSS.
